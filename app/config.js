@@ -2,7 +2,7 @@
 // App ids: run `python3 sync-apps.py --list` (or look in app/apps.js after a sync).
 window.CONFIG = {
   // Apps pinned to the dock row at the bottom, in this order. Missing apps are skipped.
-  dockApps: ['netflix', 'amazon', 'youtube.leanback.v4', 'hotstar'],
+  dockApps: ['netflix', 'amazon.global', 'youtube.leanback.v4', 'com.disney.disneyplus-prod'],
 
   // Apps never shown as tiles (inputs and Live TV are already in the Inputs menu).
   hiddenApps: [
