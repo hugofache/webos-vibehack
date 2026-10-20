@@ -25,8 +25,9 @@ keep working, and deleting the Developer Mode app removes everything.
 
 ## Setup
 
-You need a Mac on the same Wi-Fi as the TV, with Node.js (for LG's `ares` CLI, fetched with `npx`)
-and Python 3. The steps are macOS only for now: `install.sh` makes the app icon with `sips`.
+You need a computer on the same network as the TV (Wi-Fi or Ethernet both work), with Node.js
+(for LG's `ares` CLI, fetched with `npx`) and Python 3. Works on macOS, Linux, and Windows (via
+WSL).
 
 **1. Developer Mode on the TV**
 
@@ -49,7 +50,7 @@ npx -y -p @webos-tools/cli ares-setup-device -m lgtv -i "{'privatekey':'lgtv_web
 ```bash
 git clone https://github.com/OmkarK97/webos-vibehack.git
 cd webos-vibehack
-python3 -m venv venv && venv/bin/pip install websockets
+python3 -m venv venv && venv/bin/pip install websockets Pillow
 TV_HOST=192.168.1.50 ./install.sh
 ```
 
@@ -73,7 +74,15 @@ appears, opens the launcher on top.
 - When the TV powers on to LG's home, it goes to the launcher too.
 - When the watcher isn't running, Home simply opens LG's home as usual.
 
-On a Mac, install it as a background service that starts at login:
+On **Linux**, install it as a systemd user service that starts at login:
+
+```bash
+TV_HOST=192.168.1.50 ./home-watch-linux.sh     # install or update
+./home-watch-linux.sh uninstall                # remove
+# Logs: journalctl --user -u tv-vibehack-home-watch -f
+```
+
+On a **Mac**, install it as a background service that starts at login:
 
 ```bash
 TV_HOST=192.168.1.50 ./home-watch-mac.sh       # install or update
@@ -82,9 +91,15 @@ TV_HOST=192.168.1.50 ./home-watch-mac.sh       # install or update
 
 macOS will ask for Local Network access for Python: allow it (System Settings → Privacy & Security →
 Local Network), or the watcher logs "No route to host". The log is at
-`~/Library/Logs/tv-vibehack-home-watch.log`. A Mac only redirects Home while it's awake and at
-home; for every time, run `python3 home-watch.py 192.168.1.50` on something that's always on, such
-as a Raspberry Pi.
+`~/Library/Logs/tv-vibehack-home-watch.log`.
+
+On **any platform**, you can also just run it directly:
+
+```bash
+python3 home-watch.py 192.168.1.50
+```
+
+This is fine for a Raspberry Pi or a machine that's always on.
 
 ## Using it
 
@@ -130,6 +145,7 @@ For when you do land on it. Names vary a little by webOS version:
 | [`sync-apps.py`](sync-apps.py) | Reads apps, icons and HDMI inputs from the TV into `app/apps.js` and `app/icons/` |
 | [`home-watch.py`](home-watch.py) | Sends the Home button to the launcher |
 | [`home-watch-mac.sh`](home-watch-mac.sh) | Runs the watcher as a macOS background service |
+| [`home-watch-linux.sh`](home-watch-linux.sh) | Runs the watcher as a Linux systemd user service |
 | [`lgtv.py`](lgtv.py) | Pairs with and talks to the TV's remote-control service |
 | [`assets/icon.jpg`](assets/icon.jpg) | The app icon, resized to PNG by `install.sh` |
 

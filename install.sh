@@ -23,8 +23,13 @@ PY="${PY:-python3}"
 
 if [ ! -f app/icon.png ]; then
   # The webOS app list wants PNG icons: 80px and 130px.
-  sips -s format png -z 80 80 assets/icon.jpg --out app/icon.png >/dev/null
-  sips -s format png -z 130 130 assets/icon.jpg --out app/largeIcon.png >/dev/null
+  # Uses Pillow (cross-platform) instead of macOS-only sips.
+  "$PY" -c "
+from PIL import Image
+img = Image.open('assets/icon.jpg')
+img.resize((80, 80), Image.LANCZOS).save('app/icon.png')
+img.resize((130, 130), Image.LANCZOS).save('app/largeIcon.png')
+"
 fi
 
 rm -rf build && mkdir build
